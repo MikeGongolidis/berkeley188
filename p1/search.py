@@ -87,7 +87,48 @@ def depthFirstSearch(problem: SearchProblem):
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     """
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    #INITIALISE THE SEARCH TREE USING THE INITIAL STATE OF THE PROBLEM
+    TREE = util.Stack()
+    TREE.push(problem.getStartState())
+    actions = []
+    not_chosen = []
+    print("Start:", problem.getStartState())
+    
+    #LOOP DO
+    print("While not the goal state ", problem.isGoalState(TREE.list[-1]))
+    while not problem.isGoalState(TREE.list[-1]):
+        
+        #CHECK FOR CANDIDATE EXPANSION
+
+
+        print("Get's fridnge:", problem.getSuccessors(TREE.list[-1]))
+
+        #IF THEY EXIST, PICK ONE BASED ON STRATEGY
+        
+        potential_successors = [ s for s in problem.getSuccessors(TREE.list[-1]) if s[0] not in TREE.list]
+        print("Potential successors, not visited states:", potential_successors)
+        
+        if len(potential_successors) > 0:
+            leftmost_state = potential_successors[0]
+            actions.append(leftmost_state[1])
+            TREE.push(leftmost_state[0])
+            for not_gonna_chose in potential_successors[1:]:
+                not_chosen.append(not_gonna_chose[0])
+        else:
+            print("Chosing another path:",not_chosen)
+            if len(not_chosen)>0:
+                TREE.push(not_chosen[0])
+                not_chosen.pop(0)
+            else:
+                return actions
+        print(f"Action length: {len(actions)}")
+        print(f"Actions: {actions}")
+        print(f"Position length: {len(TREE.list)}")
+        print(f"position: {TREE.list}")
+
+    return actions
+
+
 
 def breadthFirstSearch(problem: SearchProblem):
     """Search the shallowest nodes in the search tree first."""
