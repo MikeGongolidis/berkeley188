@@ -259,10 +259,10 @@ def uniformCostSearch(problem: SearchProblem):
             for n in neighbours:
                 pos, direction, priority = n
                 if pos not in visited:
-
-                    search_next.update(pos,priority+current_priority)
-                    if pos not in path or path[pos][2] > priority+current_priority:
-                        path[pos] = (node,direction,priority)
+                    cumulative_priority = current_priority + priority
+                    search_next.update(pos,cumulative_priority)
+                    if pos not in path or path[pos][2] > cumulative_priority:
+                        path[pos] = (node,direction,cumulative_priority)
     
     actions = []
     while True:
@@ -287,7 +287,40 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    visited = []
+    search_next = util.PriorityQueue()
+    path = {}
+    search_next.push(problem.getStartState(),0)
+    
+    while True:
+        current_priority, node = search_next.pop()
+        visited.append(node)
+        
+        if problem.isGoalState(node):
+            break
+        
+        neighbours = problem.getSuccessors(node)
+        if neighbours:
+            for n in neighbours:
+                pos, direction, priority = n
+                if pos not in visited:
+                    f = current_priority + priority + heuristic(pos,problem) - heuristic(node,problem)
+                    search_next.update(pos,f)
+                    if pos not in path or path[pos][2] > f:
+                        path[pos] = (node,direction,f)
+    
+    actions = []
+    while True:
+        try:
+            parent, direction,_ = path[node]
+        except KeyError:
+            break
+        
+        actions.append(direction)
+        node = parent
+    
+    actions.reverse()
+    return actions
 
 
 # Abbreviations
