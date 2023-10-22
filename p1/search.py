@@ -87,46 +87,114 @@ def depthFirstSearch(problem: SearchProblem):
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     """
     "*** YOUR CODE HERE ***"
-    #INITIALISE THE SEARCH TREE USING THE INITIAL STATE OF THE PROBLEM
-    TREE = util.Stack()
-    TREE.push(problem.getStartState())
-    actions = []
-    not_chosen = []
-    print("Start:", problem.getStartState())
+
+   #INITIALISE THE SEARCH TREE USING THE INITIAL STATE OF THE PROBLEM
+    # TREE = util.Stack()
+    # TREE.push(problem.getStartState())
+    # actions = []
+    # not_chosen = []
+    # # print("Start:", problem.getStartState())
     
-    #LOOP DO
-    print("While not the goal state ", problem.isGoalState(TREE.list[-1]))
-    while not problem.isGoalState(TREE.list[-1]):
+    # tree_dict = {}
+    
+    # #LOOP DO
+    # # print("While not the goal state ", problem.isGoalState(TREE.list[-1]))
+    # while not problem.isGoalState(TREE.list[-1]):
         
-        #CHECK FOR CANDIDATE EXPANSION
+    #     #CHECK FOR CANDIDATE EXPANSION
 
 
-        print("Get's fridnge:", problem.getSuccessors(TREE.list[-1]))
+    #     # print("Get's fridnge:", problem.getSuccessors(TREE.list[-1]))
 
-        #IF THEY EXIST, PICK ONE BASED ON STRATEGY
+    #     #IF THEY EXIST, PICK ONE BASED ON STRATEGY
         
-        potential_successors = [ s for s in problem.getSuccessors(TREE.list[-1]) if s[0] not in TREE.list]
-        print("Potential successors, not visited states:", potential_successors)
+    #     potential_successors = [ s for s in problem.getSuccessors(TREE.list[-1]) if s[0] not in TREE.list]
+    #     # print("Potential successors, not visited states:", potential_successors)
         
-        if len(potential_successors) > 0:
-            leftmost_state = potential_successors[0]
-            actions.append(leftmost_state[1])
-            TREE.push(leftmost_state[0])
-            for not_gonna_chose in potential_successors[1:]:
-                not_chosen.append(not_gonna_chose[0])
-        else:
-            print("Chosing another path:",not_chosen)
-            if len(not_chosen)>0:
-                TREE.push(not_chosen[0])
-                not_chosen.pop(0)
-            else:
-                return actions
-        print(f"Action length: {len(actions)}")
-        print(f"Actions: {actions}")
-        print(f"Position length: {len(TREE.list)}")
-        print(f"position: {TREE.list}")
+    #     if len(potential_successors) > 0:
+    #         leftmost_state = potential_successors[0]
+    #         tree_dict[leftmost_state[0]] = {"move": leftmost_state[1],"parent":TREE.list[-1]}
+    #         for not_gonna_chose in potential_successors[1:]:
+    #             if not_gonna_chose not in TREE.list:
+    #                 not_chosen.append(not_gonna_chose[0])
+    #                 tree_dict[not_gonna_chose[0]] = {"move": not_gonna_chose[1],"parent":TREE.list[-1]}
+    #         TREE.push(leftmost_state[0])
+    #     else:
+    #         print("Chosing another path:",not_chosen)
+    #         if len(not_chosen)>0:
+    #             TREE.push(not_chosen[0])
+    #             not_chosen.pop(0)
+    #         else:
+    #             break
+    #     # print(f"Action length: {len(actions)}")
+    #     # print(f"Actions: {actions}")
+    #     # print(f"Position length: {len(TREE.list)}")
+    #     # print(f"position: {TREE.list}")
+    
+    # # print(tree_dict)
+    
+    # node = TREE.list[-1]
+    # # print(node)
+    # while not node == problem.getStartState():
+    #     actions.append(tree_dict[node]['move'])
+    #     # print(node, actions)
+    #     node = tree_dict[node]['parent']
+    
+    # actions.reverse()
+    
+    # visited = []
+    # search_next = util.Stack()
+    # path = {}
 
-    return actions
+    # search_next.push(problem.getStartState())
+    
+    # while True:
+    #     node = search_next.pop()
+    #     visited.append(node)
+    #     if problem.isGoalState(node):
+    #         break
+        
+    #     neighbours = problem.getSuccessors(node)
+    #     if neighbours:
+    #         for n in neighbours:
+    #             pos, direction, _ = n
+    #             if pos not in visited:
+    #                 search_next.push(pos)
+    #                 path[pos] = (node,direction)
+    
+    # actions = []
+    # while True:
+    #     try:
+    #         parent, direction = path[node]
+    #     except KeyError:
+    #         break
+        
+    #     actions.append(direction)
+    #     node = parent
+    
+    # actions.reverse()
+    # return actions
+    
+    def visit(state, visited):
+        
+        if problem.isGoalState(state):
+            return [],True
+
+        visited.append(state)
+        for neighbour in problem.getSuccessors(state):
+            position, direction, _ = neighbour
+            if position not in visited:
+                directions, goal_reached = visit(position,visited)
+                if goal_reached:
+                    directions.append(direction)
+                    return directions, True
+                
+        return [], False
+        
+    directions,_ = visit(problem.getStartState(),[])
+    directions.reverse()
+    print(directions)
+    return directions
 
 
 
