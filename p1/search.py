@@ -142,58 +142,60 @@ def depthFirstSearch(problem: SearchProblem):
     
     # actions.reverse()
     
-    # visited = []
-    # search_next = util.Stack()
-    # path = {}
+    visited = []
+    search_next = util.Stack()
+    path = {}
 
-    # search_next.push(problem.getStartState())
+    search_next.push(problem.getStartState())
     
-    # while True:
-    #     node = search_next.pop()
-    #     visited.append(node)
-    #     if problem.isGoalState(node):
-    #         break
+    while True:
+        node = search_next.pop()
+        visited.append(node)
+        if problem.isGoalState(node):
+            break
         
-    #     neighbours = problem.getSuccessors(node)
-    #     if neighbours:
-    #         for n in neighbours:
-    #             pos, direction, _ = n
-    #             if pos not in visited:
-    #                 search_next.push(pos)
-    #                 path[pos] = (node,direction)
+        neighbours = problem.getSuccessors(node)
+        if neighbours:
+            for n in neighbours:
+                pos, direction, _ = n
+                if pos not in visited:
+                    search_next.push(pos)
+                    path[pos] = (node,direction)
     
-    # actions = []
-    # while True:
-    #     try:
-    #         parent, direction = path[node]
-    #     except KeyError:
-    #         break
+    actions = []
+    while True:
+        try:
+            parent, direction = path[node]
+        except KeyError:
+            break
         
-    #     actions.append(direction)
-    #     node = parent
+        actions.append(direction)
+        node = parent
     
-    # actions.reverse()
-    # return actions
+    actions.reverse()
+    return actions
     
-    def visit(state, visited):
-        
-        if problem.isGoalState(state):
-            return [],True
+    ## RECURSION
 
-        visited.append(state)
-        for neighbour in problem.getSuccessors(state):
-            position, direction, _ = neighbour
-            if position not in visited:
-                directions, goal_reached = visit(position,visited)
-                if goal_reached:
-                    directions.append(direction)
-                    return directions, True
+    # def visit(state, visited):
+        
+    #     if problem.isGoalState(state):
+    #         return [],True
+
+    #     visited.append(state)
+    #     for neighbour in problem.getSuccessors(state):
+    #         position, direction, _ = neighbour
+    #         if position not in visited:
+    #             directions, goal_reached = visit(position,visited)
+    #             if goal_reached:
+    #                 directions.append(direction)
+    #                 return directions, True
                 
-        return [], False
+    #     return [], False
         
-    directions,_ = visit(problem.getStartState(),[])
-    directions.reverse()
-    print(directions)
+    # directions,_ = visit(problem.getStartState(),[])
+    # directions.reverse()
+    # print(directions)
     return directions
 
 
@@ -201,12 +203,79 @@ def depthFirstSearch(problem: SearchProblem):
 def breadthFirstSearch(problem: SearchProblem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    
+    visited = []
+    search_next = util.Queue()
+    path = {}
+
+    search_next.push(problem.getStartState())
+    
+    while True:
+        node = search_next.pop()
+        visited.append(node)
+        if problem.isGoalState(node):
+            break
+        
+        neighbours = problem.getSuccessors(node)
+        if neighbours:
+            for n in neighbours:
+                pos, direction, _ = n
+                if pos not in visited and pos not in search_next.list:
+                    search_next.push(pos)
+                    path[pos] = (node,direction)
+    
+    actions = []
+    while True:
+        try:
+            parent, direction = path[node]
+        except KeyError:
+            break
+        
+        actions.append(direction)
+        node = parent
+    
+    actions.reverse()
+    return actions
+
 
 def uniformCostSearch(problem: SearchProblem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+
+    visited = []
+    search_next = util.PriorityQueue()
+    path = {}
+    search_next.push(problem.getStartState(),0)
+    
+    while True:
+        current_priority, node = search_next.pop()
+        visited.append(node)
+        
+        if problem.isGoalState(node):
+            break
+        
+        neighbours = problem.getSuccessors(node)
+        if neighbours:
+            for n in neighbours:
+                pos, direction, priority = n
+                if pos not in visited:
+
+                    search_next.update(pos,priority+current_priority)
+                    if pos not in path or path[pos][2] > priority+current_priority:
+                        path[pos] = (node,direction,priority)
+    
+    actions = []
+    while True:
+        try:
+            parent, direction,_ = path[node]
+        except KeyError:
+            break
+        
+        actions.append(direction)
+        node = parent
+    
+    actions.reverse()
+    return actions
 
 def nullHeuristic(state, problem=None):
     """
