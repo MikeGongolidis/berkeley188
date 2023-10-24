@@ -142,6 +142,8 @@ def depthFirstSearch(problem: SearchProblem):
     
     # actions.reverse()
     
+    # Optimal, passing
+
     visited = []
     search_next = util.Stack()
     path = {}
@@ -158,7 +160,7 @@ def depthFirstSearch(problem: SearchProblem):
         if neighbours:
             for n in neighbours:
                 pos, direction, _ = n
-                if pos not in visited:
+                if pos not in visited and pos not in search_next.list:
                     search_next.push(pos)
                     path[pos] = (node,direction)
     
@@ -175,7 +177,7 @@ def depthFirstSearch(problem: SearchProblem):
     actions.reverse()
     return actions
     
-    ## RECURSION
+    # # RECURSION
 
     # def visit(state, visited):
         
@@ -195,8 +197,7 @@ def depthFirstSearch(problem: SearchProblem):
         
     # directions,_ = visit(problem.getStartState(),[])
     # directions.reverse()
-    # print(directions)
-    return directions
+    # return directions
 
 
 
