@@ -296,7 +296,6 @@ def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic):
     while True:
         current_priority, node = search_next.pop()
         visited.append(node)
-        
         if problem.isGoalState(node):
             break
         
