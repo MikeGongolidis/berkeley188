@@ -43,6 +43,8 @@ import time
 import search
 import pacman
 
+from util import manhattanDistance
+
 class GoWestAgent(Agent):
     "An agent that goes West until it can't."
 
@@ -375,8 +377,12 @@ def cornersHeuristic(state: Any, problem: CornersProblem):
     corners = problem.corners # These are the corner coordinates
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
 
-    "*** YOUR CODE HERE ***"
-    return 0 # Default to trivial solution
+    heur = []
+    for st_corn,corner in zip(state[1:],corners):
+        if st_corn == 0:
+            heur.append(manhattanDistance(corner,state[0]))
+
+    return max(heur) if len(heur)> 0 else 0
 
 class AStarCornersAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
