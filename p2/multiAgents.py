@@ -18,6 +18,11 @@ import random, util
 
 from game import Agent
 from pacman import GameState
+import math 
+import search
+import searchAgents
+
+import numpy as np
 
 class ReflexAgent(Agent):
     """
@@ -29,6 +34,7 @@ class ReflexAgent(Agent):
     headers.
     """
 
+    foodWeights = [3,2,1]
 
     def getAction(self, gameState: GameState):
         """
@@ -41,7 +47,6 @@ class ReflexAgent(Agent):
         """
         # Collect legal moves and successor states
         legalMoves = gameState.getLegalActions()
-
         # Choose one of the best actions
         scores = [self.evaluationFunction(gameState, action) for action in legalMoves]
         bestScore = max(scores)
@@ -74,8 +79,28 @@ class ReflexAgent(Agent):
         newGhostStates = successorGameState.getGhostStates()
         newScaredTimes = [ghostState.scaredTimer for ghostState in newGhostStates]
 
-        "*** YOUR CODE HERE ***"
-        return successorGameState.getScore()
+        score = successorGameState.getScore() 
+        for ghost in newGhostStates:
+            if ghost.scaredTimer == 0:
+                ghostPosx,ghostPosy = ghost.getPosition()
+                dist = searchAgents.mazeDistance(newPos,(int(ghostPosx),int(ghostPosy)),successorGameState)
+                if dist < 4:
+                    score = score - dist*10
+            else:
+                # ghostPosx,ghostPosy = ghost.getPosition()
+                # dist = searchAgents.mazeDistance(newPos,(int(ghostPosx),int(ghostPosy)),successorGameState)
+                # score = score + dist
+                pass
+
+        if len(newFood.asList()) > 0:
+            
+            dist_from_food = [searchAgents.mazeDistance(newPos,food,successorGameState) for food in newFood.asList()]
+            dist_from_food.sort()
+            food_len = min(len(dist_from_food),3)
+            avg_dist_food = np.average(dist_from_food[:food_len],weights=self.foodWeights[:food_len])
+            score = score - avg_dist_food
+
+        return score
 
 def scoreEvaluationFunction(currentGameState: GameState):
     """
@@ -177,3 +202,5 @@ def betterEvaluationFunction(currentGameState: GameState):
 
 # Abbreviation
 better = betterEvaluationFunction
+
+
