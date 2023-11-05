@@ -93,7 +93,6 @@ class GameState:
 #        GameState.explored.add(self)
         if self.isWin() or self.isLose():
             return []
-
         if agentIndex == 0:  # Pacman is moving
             return PacmanRules.getLegalActions(self)
         else:
@@ -411,6 +410,7 @@ class GhostRules:
         conf = state.getGhostState(ghostIndex).configuration
         possibleActions = Actions.getPossibleActions(
             conf, state.data.layout.walls)
+        print(f" In pacman: {possibleActions}")
         reverse = Actions.reverseDirection(conf.direction)
         if Directions.STOP in possibleActions:
             possibleActions.remove(Directions.STOP)

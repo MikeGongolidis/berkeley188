@@ -161,7 +161,54 @@ class MinimaxAgent(MultiAgentSearchAgent):
         Returns whether or not the game state is a losing state
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        
+        def value(state, current_depth, current_agent):
+            
+            if state.isWin() or state.isLose() or current_depth == self.depth:
+                return self.evaluationFunction(state) , ''
+            
+            if current_agent == self.index:
+                return max_value(state, current_depth, current_agent)
+            else:
+                return min_value(state, current_depth, current_agent)
+            
+        
+        def min_value(state, current_depth, current_agent):
+            next_agent = (current_agent + 1) % self.total_agents
+            next_depth = current_depth
+            if next_agent < current_agent:
+                next_depth  = current_depth + 1
+            available_actions = state.getLegalActions(agentIndex=current_agent)
+
+
+            v = 1000000
+            for next_state,action in [(state.generateSuccessor(current_agent, action),action) for action in available_actions]:
+                temp_val , _ = value(next_state, next_depth, next_agent)
+                if v > temp_val:
+                    v = temp_val
+                    best_action = action
+            return v,best_action
+        
+        def max_value(state, current_depth, current_agent):
+            next_agent = (current_agent + 1) % self.total_agents
+            next_depth = current_depth
+            if next_agent < current_agent:
+                next_depth  = current_depth + 1
+            available_actions = state.getLegalActions(agentIndex=current_agent)
+
+            v = -1000000
+            for next_state,action in [(state.generateSuccessor(current_agent, action),action) for action in available_actions]:
+                temp_val, _ = value(next_state, next_depth, next_agent)
+                if v < temp_val:
+                    v = temp_val
+                    best_action = action 
+            return v,best_action
+        
+        self.total_agents = gameState.getNumAgents()
+
+        value,action = value(gameState,0,0)
+        print(value,action)
+        return action
 
 class AlphaBetaAgent(MultiAgentSearchAgent):
     """
