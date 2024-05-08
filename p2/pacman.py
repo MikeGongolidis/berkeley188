@@ -410,7 +410,6 @@ class GhostRules:
         conf = state.getGhostState(ghostIndex).configuration
         possibleActions = Actions.getPossibleActions(
             conf, state.data.layout.walls)
-        print(f" In pacman: {possibleActions}")
         reverse = Actions.reverseDirection(conf.direction)
         if Directions.STOP in possibleActions:
             possibleActions.remove(Directions.STOP)

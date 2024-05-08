@@ -220,7 +220,59 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
         Returns the minimax action using self.depth and self.evaluationFunction
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        def value(state, current_depth, current_agent, a, b):
+            print('value',a,b)
+            if state.isWin() or state.isLose() or current_depth == self.depth:
+                return self.evaluationFunction(state) , ''
+            
+            if current_agent == self.index:
+                return max_value(state, current_depth, current_agent, a, b)
+            else:
+                return min_value(state, current_depth, current_agent, a, b)
+            
+        
+        def min_value(state, current_depth, current_agent, a, b):
+            print('min',a,b)
+            next_agent = (current_agent + 1) % self.total_agents
+            next_depth = current_depth
+            if next_agent < current_agent:
+                next_depth  = current_depth + 1
+            available_actions = state.getLegalActions(agentIndex=current_agent)
+
+
+            v = 1000000
+            for next_state,action in [(state.generateSuccessor(current_agent, action),action) for action in available_actions]:
+                temp_val , _ = value(next_state, next_depth, next_agent, a, b)
+                if v > temp_val:
+                    v = temp_val
+                b = min(b, v)
+                if v < a: 
+                    return v
+            return v
+        
+        def max_value(state, current_depth, current_agent, a, b):
+            print('max',a,b)
+            next_agent = (current_agent + 1) % self.total_agents
+            next_depth = current_depth
+            if next_agent < current_agent:
+                next_depth  = current_depth + 1
+            available_actions = state.getLegalActions(agentIndex=current_agent)
+
+            v = -1000000
+            for next_state,action in [(state.generateSuccessor(current_agent, action),action) for action in available_actions]:
+                temp_val = value(next_state, next_depth, next_agent, a, b)
+                if v < temp_val:
+                    v = temp_val
+                    best_action = action 
+                a = max(a, v)
+                if v > b: 
+                    return v, best_action
+            return v,best_action
+        
+        self.total_agents = gameState.getNumAgents()
+        value,action = value(gameState,0,0,-10,10)
+        print(value,action)
+        return action
 
 class ExpectimaxAgent(MultiAgentSearchAgent):
     """
